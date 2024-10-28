@@ -24,8 +24,6 @@ import edu.wpi.first.math.util.Units;
  */
 public class DriveIOSparkMax implements DriveIO {
   private static final double GEAR_RATIO = 10.0;
-  private static final double KP = 1.0; // TODO: MUST BE TUNED, consider using REV Hardware Client
-  private static final double KD = 0.0; // TODO: MUST BE TUNED, consider using REV Hardware Client
 
   // TODO: CONFIRM CAN IDs
   private final CANSparkMax leftFrontLeader = new CANSparkMax(8, MotorType.kBrushless);
