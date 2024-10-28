@@ -13,7 +13,6 @@
 
 package frc.robot.subsystems.drive;
 
-import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -65,22 +64,15 @@ public class DriveIOSparkMax implements DriveIO {
     rightCenterFollower.follow(leftFrontLeader, false);
     rightBackFollower.follow(leftFrontLeader, false);
 
-    leftFrontLeader.enableVoltageCompensation(12.0);
-    rightFrontLeader.enableVoltageCompensation(12.0);
-    leftFrontLeader.setSmartCurrentLimit(20);
-    rightFrontLeader.setSmartCurrentLimit(20);
-
-    leftPID.setP(KP);
-    leftPID.setD(KD);
-    rightPID.setP(KP);
-    rightPID.setD(KD);
+    leftLeader.enableVoltageCompensation(12.0);
+    rightLeader.enableVoltageCompensation(12.0);
+    leftLeader.setSmartCurrentLimit(20);
+    rightLeader.setSmartCurrentLimit(20);
 
     // Shouldn't need to do this, pending email with Rev
     /*
     leftLeader.burnFlash();
     rightLeader.burnFlash();
-    leftFollower.burnFlash();
-    rightFollower.burnFlash();
     */
   }
 
@@ -91,14 +83,22 @@ public class DriveIOSparkMax implements DriveIO {
         Units.rotationsPerMinuteToRadiansPerSecond(leftEncoder.getVelocity() / GEAR_RATIO);
     inputs.leftAppliedVolts = leftLeader.getAppliedOutput() * leftLeader.getBusVoltage();
     inputs.leftCurrentAmps =
-        new double[] {leftLeader.getOutputCurrent(), leftFollower.getOutputCurrent()};
+        new double[] {
+          leftLeader.getOutputCurrent(),
+          leftCenterFollower.getOutputCurrent(),
+          leftBackFollower.getOutputCurrent()
+        };
 
     inputs.rightPositionRad = Units.rotationsToRadians(rightEncoder.getPosition() / GEAR_RATIO);
     inputs.rightVelocityRadPerSec =
         Units.rotationsPerMinuteToRadiansPerSecond(rightEncoder.getVelocity() / GEAR_RATIO);
     inputs.rightAppliedVolts = rightLeader.getAppliedOutput() * rightLeader.getBusVoltage();
     inputs.rightCurrentAmps =
-        new double[] {rightLeader.getOutputCurrent(), rightFollower.getOutputCurrent()};
+        new double[] {
+          rightLeader.getOutputCurrent(),
+          rightCenterFollower.getOutputCurrent(),
+          rightBackFollower.getOutputCurrent()
+        };
   }
 
   @Override
@@ -110,15 +110,6 @@ public class DriveIOSparkMax implements DriveIO {
   @Override
   public void setVelocity(
       double leftRadPerSec, double rightRadPerSec, double leftFFVolts, double rightFFVolts) {
-    leftPID.setReference(
-        Units.radiansPerSecondToRotationsPerMinute(leftRadPerSec * GEAR_RATIO),
-        ControlType.kVelocity,
-        0,
-        leftFFVolts);
-    rightPID.setReference(
-        Units.radiansPerSecondToRotationsPerMinute(rightRadPerSec * GEAR_RATIO),
-        ControlType.kVelocity,
-        0,
-        rightFFVolts);
+    // TODO!
   }
 }
