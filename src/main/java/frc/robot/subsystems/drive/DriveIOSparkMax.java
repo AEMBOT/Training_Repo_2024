@@ -36,24 +36,25 @@ public class DriveIOSparkMax implements DriveIO {
   // Set up some references that are better named
   private final CANSparkMax leftLeader = leftFrontLeader;
   private final CANSparkMax rightLeader = rightFrontLeader;
+  private final CANSparkMax[] motors = {
+    leftFrontLeader,
+    leftCenterFollower,
+    leftBackFollower,
+    rightFrontLeader,
+    rightCenterFollower,
+    rightBackFollower
+  };
 
   private final RelativeEncoder leftEncoder = leftLeader.getEncoder();
   private final RelativeEncoder rightEncoder = rightLeader.getEncoder();
 
   public DriveIOSparkMax() {
-    leftFrontLeader.restoreFactoryDefaults();
-    leftCenterFollower.restoreFactoryDefaults();
-    leftBackFollower.restoreFactoryDefaults();
-    rightFrontLeader.restoreFactoryDefaults();
-    rightCenterFollower.restoreFactoryDefaults();
-    rightBackFollower.restoreFactoryDefaults();
-
-    leftFrontLeader.setCANTimeout(250);
-    leftCenterFollower.setCANTimeout(250);
-    leftBackFollower.setCANTimeout(250);
-    rightFrontLeader.setCANTimeout(250);
-    rightCenterFollower.setCANTimeout(250);
-    rightBackFollower.setCANTimeout(250);
+    for (CANSparkMax motor : motors) {
+      motor.restoreFactoryDefaults();
+      motor.setCANTimeout(250);
+      motor.enableVoltageCompensation(12.0);
+      motor.setSmartCurrentLimit(20);
+    }
 
     leftFrontLeader.setInverted(false);
     leftCenterFollower.follow(leftFrontLeader, false);
@@ -62,16 +63,12 @@ public class DriveIOSparkMax implements DriveIO {
     rightCenterFollower.follow(leftFrontLeader, false);
     rightBackFollower.follow(leftFrontLeader, false);
 
-    leftLeader.enableVoltageCompensation(12.0);
-    rightLeader.enableVoltageCompensation(12.0);
-    leftLeader.setSmartCurrentLimit(20);
-    rightLeader.setSmartCurrentLimit(20);
-
-    // Shouldn't need to do this, pending email with Rev
-    /*
-    leftLeader.burnFlash();
-    rightLeader.burnFlash();
-    */
+    for (CANSparkMax motor : motors) {
+      // Recommended by REV in order to ensure that new settings are not lost
+      // during a brown-out scenario where the Spark Max loses power but the
+      // RoboRio does not
+      motor.burnFlash();
+    }
   }
 
   @Override
