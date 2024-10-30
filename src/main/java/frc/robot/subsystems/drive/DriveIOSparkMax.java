@@ -60,8 +60,8 @@ public class DriveIOSparkMax implements DriveIO {
     leftCenterFollower.follow(leftFrontLeader, false);
     leftBackFollower.follow(leftFrontLeader, false);
     rightFrontLeader.setInverted(true);
-    rightCenterFollower.follow(leftFrontLeader, false);
-    rightBackFollower.follow(leftFrontLeader, false);
+    rightCenterFollower.follow(rightFrontLeader, false);
+    rightBackFollower.follow(rightFrontLeader, false);
 
     for (CANSparkMax motor : motors) {
       // Recommended by REV in order to ensure that new settings are not lost
