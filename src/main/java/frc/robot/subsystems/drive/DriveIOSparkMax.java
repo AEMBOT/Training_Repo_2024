@@ -26,9 +26,9 @@ public class DriveIOSparkMax implements DriveIO {
   private static final double GEAR_RATIO = 10.0;
 
   // TODO: CONFIRM CAN IDs
-  private final CANSparkMax leftFrontLeader = new CANSparkMax(8, MotorType.kBrushless);
-  private final CANSparkMax leftCenterFollower = new CANSparkMax(7, MotorType.kBrushless);
-  private final CANSparkMax leftBackFollower = new CANSparkMax(6, MotorType.kBrushless);
+  private final CANSparkMax leftFrontLeader = new CANSparkMax(5, MotorType.kBrushless);
+  private final CANSparkMax leftCenterFollower = new CANSparkMax(6, MotorType.kBrushless);
+  private final CANSparkMax leftBackFollower = new CANSparkMax(4, MotorType.kBrushless);
   private final CANSparkMax rightFrontLeader = new CANSparkMax(1, MotorType.kBrushless);
   private final CANSparkMax rightCenterFollower = new CANSparkMax(2, MotorType.kBrushless);
   private final CANSparkMax rightBackFollower = new CANSparkMax(3, MotorType.kBrushless);
