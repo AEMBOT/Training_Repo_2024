@@ -7,10 +7,12 @@ public interface ArmIO {
 
     @AutoLog
     public static class ArmIOInputs {
-        public double PositionRad = 0.0;
-        public double VelocityRadPerSec = 0.0;
-        public double AppliedVolts = 0.0;
-        public double CurrentAmps = 0.0;
+        public double armPositionRad = 0.0;
+        public double armVelocityRadPerSec = 0.0;
+        public double armAppliedVolts = 0.0;
+        public double armCurrentAmps = 0.0;
+        public double armGoalPosition = 0.0;
+        public double armSetpointPosition = 0.0;
 
     }
 
@@ -22,6 +24,10 @@ public interface ArmIO {
     // public default void setVelocity(
     //     double RadPerSec, double FFVolts) {}
 
-    public default void setPosition(double PositionRad) {}
+    public default void setPosition(double SetPosition) {}
 
+    /** Run open loop at the specified voltage. */
+    public default void setVoltage(double volts) {}
+
+    public default void periodic(){}
 }
