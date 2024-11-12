@@ -61,7 +61,7 @@ public class RobotContainer {
       default:
         // Replayed robot, disable IO implementations
         drive = new Drive(new DriveIO() {});
-        arm = new Arm(new ArmIO());
+        arm = new Arm(new ArmIO() {});
         break;
     }
 
