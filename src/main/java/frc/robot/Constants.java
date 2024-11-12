@@ -34,4 +34,7 @@ public final class Constants {
     /** Replaying from a log file. */
     REPLAY
   }
+
+  public static final double armAppliedVolts = 2.0;
+  public static final double armDeadZone = 0.25; // radians
 }
