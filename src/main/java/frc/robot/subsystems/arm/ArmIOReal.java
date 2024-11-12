@@ -30,18 +30,18 @@ public class ArmIOReal implements ArmIO {
     motor.burnFlash();
   }
 
+  // Converts encoder position to radians
   private double getPosition() {
     return Units.rotationsToRadians(armEncoder.getPosition() / GEAR_RATIO);
   }
 
   // Class function
   public ArmIOReal() {
-
     motorsetup(armMotor);
   }
 
   // Override functions
-
+  // Update inputs for logger
   @Override
   public void updateInputs(ArmIOInputs inputs) {
     inputs.armPositionRad = getPosition();
@@ -51,7 +51,7 @@ public class ArmIOReal implements ArmIO {
     inputs.armAppliedVolts = armMotor.getAppliedOutput() * armMotor.getBusVoltage();
     inputs.armCurrentAmps = armMotor.getOutputCurrent();
   }
-
+  // Sets the motors goal position
   @Override
   public void setPosition(double SetPosition) {
     this.armSetpointPosition = SetPosition;
@@ -63,17 +63,11 @@ public class ArmIOReal implements ArmIO {
     // setMotorVoltage(volts);
     // No-op for now
   }
-
+  // Updates periodically, lets use this to move the arm!
   @Override
   public void periodic() {
-    /* Since the WPILib bang bang controller only operates in the forwards direction, let's roll our own */
-    double error = this.getPosition() - this.armSetpointPosition;
-    if (error > Constants.armDeadZone) {
-      armMotor.setVoltage(Constants.armAppliedVolts);
-    } else if (error < Constants.armDeadZone) {
-      armMotor.setVoltage(-Constants.armAppliedVolts);
-    } else {
-      armMotor.setVoltage(0);
-    }
+    /* TODO: Lets create our own bangbangcontroller! */
+
+
   }
 }
