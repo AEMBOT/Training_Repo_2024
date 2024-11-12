@@ -1,6 +1,3 @@
 package frc.robot.subsystems.arm;
 // TODO: Sim version of ArmIO
-public class ArmIOSim {
-
-    
-}
+public class ArmIOSim implements ArmIO {}
