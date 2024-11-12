@@ -17,6 +17,10 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.arm.Arm;
+import frc.robot.subsystems.arm.ArmIO;
+import frc.robot.subsystems.arm.ArmIOReal;
+import frc.robot.subsystems.arm.ArmIOSim;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveIO;
 import frc.robot.subsystems.drive.DriveIOSim;
@@ -31,6 +35,7 @@ import frc.robot.subsystems.drive.DriveIOSparkMax;
 public class RobotContainer {
   // Subsystems
   private final Drive drive;
+  private final Arm arm;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -44,16 +49,19 @@ public class RobotContainer {
       case REAL:
         // Real robot, instantiate hardware IO implementations
         drive = new Drive(new DriveIOSparkMax());
+        arm = new Arm(new ArmIOReal());
         break;
 
       case SIM:
         // Sim robot, instantiate physics sim IO implementations
         drive = new Drive(new DriveIOSim());
+        arm = new Arm(new ArmIOSim());
         break;
 
       default:
         // Replayed robot, disable IO implementations
         drive = new Drive(new DriveIO() {});
+        arm = new Arm(new ArmIO() {});
         break;
     }
 
@@ -72,5 +80,4 @@ public class RobotContainer {
         Commands.run(
             () -> drive.driveArcade(-controller.getLeftY(), controller.getLeftX()), drive));
   }
-
 }
