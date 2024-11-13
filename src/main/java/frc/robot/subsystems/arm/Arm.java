@@ -30,8 +30,13 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
+    io.periodic();
     io.updateInputs(inputs);
     Logger.processInputs("Arm", inputs);
+  }
+
+  public void setPosition(double position) {
+    io.setPosition(position);
   }
 
   private void runVolts(double volts) {

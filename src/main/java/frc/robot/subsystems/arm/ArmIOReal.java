@@ -11,7 +11,7 @@ public class ArmIOReal implements ArmIO {
   // TODO: Gear ratio of the arm?
   private static final double GEAR_RATIO = 100.0;
   // TODO: Confirm CANID of armmotor
-  private final CANSparkMax armMotor = new CANSparkMax(11, MotorType.kBrushless);
+  private final CANSparkMax armMotor = new CANSparkMax(9, MotorType.kBrushless);
   private final RelativeEncoder armEncoder = armMotor.getEncoder();
   private double armSetpointPosition = armEncoder.getPosition();
 
@@ -21,8 +21,9 @@ public class ArmIOReal implements ArmIO {
     motor.restoreFactoryDefaults();
     motor.setCANTimeout(250);
     motor.enableVoltageCompensation(12.0);
-    motor.setSmartCurrentLimit(20);
+    motor.setSmartCurrentLimit(2);
     motor.setIdleMode(CANSparkBase.IdleMode.kCoast);
+    motor.setInverted(true);
 
     // Recommended by REV in order to ensure that new settings are not lost
     // during a brown-out scenario where the Spark Max loses power but the
@@ -34,9 +35,12 @@ public class ArmIOReal implements ArmIO {
     return Units.rotationsToRadians(armEncoder.getPosition() / GEAR_RATIO);
   }
 
+  private double getError() {
+    return this.armSetpointPosition - this.getPosition();
+  }
+
   // Class function
   public ArmIOReal() {
-
     motorsetup(armMotor);
   }
 
@@ -45,6 +49,7 @@ public class ArmIOReal implements ArmIO {
   @Override
   public void updateInputs(ArmIOInputs inputs) {
     inputs.armPositionRad = getPosition();
+    inputs.armErrorRad = getError();
     inputs.armVelocityRadPerSec =
         Units.rotationsPerMinuteToRadiansPerSecond(armEncoder.getVelocity() / GEAR_RATIO);
     inputs.armSetpointPosition = this.armSetpointPosition;
@@ -53,8 +58,8 @@ public class ArmIOReal implements ArmIO {
   }
 
   @Override
-  public void setPosition(double SetPosition) {
-    this.armSetpointPosition = SetPosition;
+  public void setPosition(double position) {
+    this.armSetpointPosition = position;
   }
 
   /** Run open loop at the specified voltage. */
@@ -67,10 +72,10 @@ public class ArmIOReal implements ArmIO {
   @Override
   public void periodic() {
     /* Since the WPILib bang bang controller only operates in the forwards direction, let's roll our own */
-    double error = this.getPosition() - this.armSetpointPosition;
+    double error = getError();
     if (error > Constants.armDeadZone) {
       armMotor.setVoltage(Constants.armAppliedVolts);
-    } else if (error < Constants.armDeadZone) {
+    } else if (error < -Constants.armDeadZone) {
       armMotor.setVoltage(-Constants.armAppliedVolts);
     } else {
       armMotor.setVoltage(0);
