@@ -20,7 +20,7 @@ public class ArmIOReal implements ArmIO {
     motor.setCANTimeout(250);
     motor.enableVoltageCompensation(12.0);
     motor.setSmartCurrentLimit(2);
-    // TODO: Lets change the idle mode from coast to break!
+    // TODO: Lets change the idle mode from coast to brake!
     motor.setIdleMode(CANSparkBase.IdleMode.kCoast);
     motor.setInverted(true);
 
