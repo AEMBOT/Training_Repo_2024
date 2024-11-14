@@ -3,10 +3,11 @@ package frc.robot.subsystems.arm;
 import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.littletonrobotics.junction.Logger;
+import java.util.function.DoubleSupplier;
 
-// TODO: Base subsystem class
 public class Arm extends SubsystemBase {
 
   private final ArmIO io;
@@ -30,11 +31,27 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
+    io.periodic();
     io.updateInputs(inputs);
     Logger.processInputs("Arm", inputs);
   }
 
+  public void setPosition(double position) {
+    io.setPosition(position);
+  }
+
   private void runVolts(double volts) {
     io.setVoltage(volts);
+  }
+  // This creates a command style request for the scheduler to set goal positions
+  // TODO: Lets finish this command based function!
+  // Hint: Utilize the runPosition function below in the return.
+  public Command setPositionCommand(DoubleSupplier posRad) {
+    
+  }
+  // This will log the new goal position and set the position 
+  public void runPosition(double positionRad) {
+    Logger.recordOutput("Arm/GoalRad", positionRad);
+    io.setPosition(positionRad);
   }
 }
