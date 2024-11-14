@@ -65,10 +65,7 @@ public class RobotContainer {
         break;
     }
 
-    arm.setDefaultCommand(Commands.run(() -> arm.setPosition(Math.PI / 2), arm));
-    drive.setDefaultCommand(
-        Commands.run(
-            () -> drive.driveArcade(-controller.getLeftY(), controller.getLeftX()), drive));
+    arm.setDefaultCommand(Commands.run(() -> arm.setPosition(Math.PI / 1.5), arm));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -80,5 +77,21 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
-  private void configureButtonBindings() {}
+  private void configureButtonBindings() {
+    drive.setDefaultCommand(
+        Commands.run(
+            () -> drive.driveArcade(-controller.getLeftY(), controller.getLeftX()), drive));
+    
+    controller
+      .b()
+      .whileTrue(
+        arm.setPositionCommand(() -> Math.PI / 2)
+      );
+    
+    controller
+      .y()
+      .whileTrue(
+        arm.setPositionCommand(() -> Math.PI / 4)
+      );
+  }
 }

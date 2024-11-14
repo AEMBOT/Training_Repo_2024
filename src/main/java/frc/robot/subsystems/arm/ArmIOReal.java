@@ -8,9 +8,7 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 public class ArmIOReal implements ArmIO {
-  // TODO: Gear ratio of the arm?
   private static final double GEAR_RATIO = 100.0;
-  // TODO: Confirm CANID of armmotor
   private final CANSparkMax armMotor = new CANSparkMax(9, MotorType.kBrushless);
   private final RelativeEncoder armEncoder = armMotor.getEncoder();
   private double armSetpointPosition = armEncoder.getPosition();
@@ -22,6 +20,7 @@ public class ArmIOReal implements ArmIO {
     motor.setCANTimeout(250);
     motor.enableVoltageCompensation(12.0);
     motor.setSmartCurrentLimit(2);
+    // TODO: Lets change the idle mode from coast to break!
     motor.setIdleMode(CANSparkBase.IdleMode.kCoast);
     motor.setInverted(true);
 
@@ -30,11 +29,11 @@ public class ArmIOReal implements ArmIO {
     // RoboRio does not
     motor.burnFlash();
   }
-
+  // This gets the motors current position in Radians
   private double getPosition() {
     return Units.rotationsToRadians(armEncoder.getPosition() / GEAR_RATIO);
   }
-
+  // This gets the motors current distance away from the goal position (AKA Error)
   private double getError() {
     return this.armSetpointPosition - this.getPosition();
   }
@@ -57,6 +56,7 @@ public class ArmIOReal implements ArmIO {
     inputs.armCurrentAmps = armMotor.getOutputCurrent();
   }
 
+  // Sets the goal position for the bangbang controller
   @Override
   public void setPosition(double position) {
     this.armSetpointPosition = position;
