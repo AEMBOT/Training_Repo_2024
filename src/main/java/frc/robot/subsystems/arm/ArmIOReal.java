@@ -44,7 +44,7 @@ public class ArmIOReal implements ArmIO {
   }
 
   // Override functions
-
+  // Update inputs for logger
   @Override
   public void updateInputs(ArmIOInputs inputs) {
     inputs.armPositionRad = getPosition();
@@ -68,7 +68,7 @@ public class ArmIOReal implements ArmIO {
     // setMotorVoltage(volts);
     // No-op for now
   }
-
+  // Updates periodically, lets use this to move the arm!
   @Override
   public void periodic() {
     /* Since the WPILib bang bang controller only operates in the forwards direction, let's roll our own */
