@@ -77,21 +77,14 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
+
+  // TODO: Lets make two buttons on our controller change the goal position of the arm!
+  // EX: command.a()
   private void configureButtonBindings() {
     drive.setDefaultCommand(
         Commands.run(
             () -> drive.driveArcade(-controller.getLeftY(), controller.getLeftX()), drive));
+
     
-    controller
-      .b()
-      .whileTrue(
-        arm.setPositionCommand(() -> Math.PI / 2)
-      );
-    
-    controller
-      .y()
-      .whileTrue(
-        arm.setPositionCommand(() -> Math.PI / 4)
-      );
   }
 }

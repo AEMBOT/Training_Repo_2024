@@ -29,10 +29,12 @@ public class ArmIOReal implements ArmIO {
     // RoboRio does not
     motor.burnFlash();
   }
+
   // This gets the motors current position in Radians
   private double getPosition() {
     return Units.rotationsToRadians(armEncoder.getPosition() / GEAR_RATIO);
   }
+
   // This gets the motors current distance away from the goal position (AKA Error)
   private double getError() {
     return this.armSetpointPosition - this.getPosition();
@@ -62,13 +64,8 @@ public class ArmIOReal implements ArmIO {
     this.armSetpointPosition = position;
   }
 
-  /** Run open loop at the specified voltage. */
-  @Override
-  public void setVoltage(double volts) {
-    // setMotorVoltage(volts);
-    // No-op for now
-  }
   // Updates periodically, lets use this to move the arm!
+  // TODO: Play around with this function, see how your changes affect the control of the arm.
   @Override
   public void periodic() {
     /* Since the WPILib bang bang controller only operates in the forwards direction, let's roll our own */

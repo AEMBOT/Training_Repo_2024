@@ -18,10 +18,6 @@ public interface ArmIO {
   /** Updates the set of loggable inputs. */
   public default void updateInputs(ArmIOInputs inputs) {}
 
-  /** Run closed loop at the specified velocity. */
-  // public default void setVelocity(
-  //     double RadPerSec, double FFVolts) {}
-
   public default void setPosition(double position) {}
 
   /** Run open loop at the specified voltage. */

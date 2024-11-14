@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import org.littletonrobotics.junction.Logger;
 import java.util.function.DoubleSupplier;
 
-// TODO: Base subsystem class
 public class Arm extends SubsystemBase {
 
   private final ArmIO io;
@@ -45,8 +44,10 @@ public class Arm extends SubsystemBase {
     io.setVoltage(volts);
   }
   // This creates a command style request for the scheduler to set goal positions
+  // TODO: Lets finish this command based function!
+  // Hint: Utilize the runPosition function below in the return.
   public Command setPositionCommand(DoubleSupplier posRad) {
-    return run (() -> runPosition(posRad.getAsDouble()));
+    
   }
   // This will log the new goal position and set the position 
   public void runPosition(double positionRad) {
