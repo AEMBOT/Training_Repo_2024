@@ -65,6 +65,8 @@ public class RobotContainer {
         break;
     }
 
+    arm.setDefaultCommand(Commands.run(() -> arm.setPosition(Math.PI / 1.5), arm));
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -79,5 +81,17 @@ public class RobotContainer {
     drive.setDefaultCommand(
         Commands.run(
             () -> drive.driveArcade(-controller.getLeftY(), controller.getLeftX()), drive));
+    
+    controller
+      .b()
+      .whileTrue(
+        arm.setPositionCommand(() -> Math.PI / 2)
+      );
+    
+    controller
+      .y()
+      .whileTrue(
+        arm.setPositionCommand(() -> Math.PI / 4)
+      );
   }
 }
