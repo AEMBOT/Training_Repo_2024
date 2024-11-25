@@ -36,5 +36,5 @@ public final class Constants {
   }
 
   public static final double armAppliedVolts = 12.0;
-  public static final double armDeadZone = 0.25; // radians
+  public static final double armDeadZone = 3;
 }

@@ -8,7 +8,9 @@ import edu.wpi.first.math.util.Units;
 import frc.robot.Constants;
 
 public class ArmIOReal implements ArmIO {
-  private static final double GEAR_RATIO = 100.0;
+
+  // Changed gear ratio from 100 --> 90 * 100 / 130 as 130 was true 90 degrees
+  private static final double GEAR_RATIO = (90 * 100) / 130;
   private final CANSparkMax armMotor = new CANSparkMax(9, MotorType.kBrushless);
   private final RelativeEncoder armEncoder = armMotor.getEncoder();
   private double armSetpointPosition = armEncoder.getPosition();
@@ -19,9 +21,8 @@ public class ArmIOReal implements ArmIO {
     motor.restoreFactoryDefaults();
     motor.setCANTimeout(250);
     motor.enableVoltageCompensation(12.0);
-    motor.setSmartCurrentLimit(2);
-    // TODO: Lets change the idle mode from coast to brake!
-    motor.setIdleMode(CANSparkBase.IdleMode.kCoast);
+    motor.setSmartCurrentLimit(4);
+    motor.setIdleMode(CANSparkBase.IdleMode.kBrake);
     motor.setInverted(true);
 
     // Recommended by REV in order to ensure that new settings are not lost
@@ -30,9 +31,9 @@ public class ArmIOReal implements ArmIO {
     motor.burnFlash();
   }
 
-  // This gets the motors current position in Radians
+  // This gets the motors current position in Degrees
   private double getPosition() {
-    return Units.rotationsToRadians(armEncoder.getPosition() / GEAR_RATIO);
+    return Units.rotationsToDegrees(armEncoder.getPosition() / GEAR_RATIO);
   }
 
   // This gets the motors current distance away from the goal position (AKA Error)
@@ -49,10 +50,10 @@ public class ArmIOReal implements ArmIO {
   // Update inputs for logger
   @Override
   public void updateInputs(ArmIOInputs inputs) {
-    inputs.armPositionRad = getPosition();
-    inputs.armErrorRad = getError();
-    inputs.armVelocityRadPerSec =
-        Units.rotationsPerMinuteToRadiansPerSecond(armEncoder.getVelocity() / GEAR_RATIO);
+    inputs.armPositionDeg = getPosition();
+    inputs.armErrorDeg = getError();
+    inputs.armVelocityDegPerSec =
+        (Units.rotationsToDegrees(armEncoder.getVelocity() / GEAR_RATIO)) / 60;
     inputs.armSetpointPosition = this.armSetpointPosition;
     inputs.armAppliedVolts = armMotor.getAppliedOutput() * armMotor.getBusVoltage();
     inputs.armCurrentAmps = armMotor.getOutputCurrent();

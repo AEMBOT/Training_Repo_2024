@@ -65,7 +65,7 @@ public class RobotContainer {
         break;
     }
 
-    arm.setDefaultCommand(Commands.run(() -> arm.setPosition(Math.PI / 1.5), arm));
+    arm.setDefaultCommand(Commands.run(() -> arm.setPosition(0), arm));
 
     // Configure the button bindings
     configureButtonBindings();
@@ -83,8 +83,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
     drive.setDefaultCommand(
         Commands.run(
-            () -> drive.driveArcade(-controller.getLeftY(), controller.getLeftX()), drive));
-
-    
+            () -> drive.driveArcade(-controller.getLeftY(), controller.getRightX()),
+            drive)); // changed left to right
+    controller.a().whileTrue(arm.setPositionCommand(() -> 90));
+    controller.b().whileTrue(arm.setPositionCommand(() -> 180));
   }
 }
