@@ -66,7 +66,6 @@ public class ArmIOReal implements ArmIO {
   }
 
   // Updates periodically, lets use this to move the arm!
-  // TODO: Play around with this function, see how your changes affect the control of the arm.
   @Override
   public void periodic() {
     /* Since the WPILib bang bang controller only operates in the forwards direction, let's roll our own */

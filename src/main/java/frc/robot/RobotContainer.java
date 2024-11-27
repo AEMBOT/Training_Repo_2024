@@ -14,6 +14,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -37,6 +39,7 @@ public class RobotContainer {
   private final Drive drive;
   private final Arm arm;
 
+  private final Relay fan = new Relay(0);
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
 
@@ -78,14 +81,15 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
 
-  // TODO: Lets make two buttons on our controller change the goal position of the arm!
   // EX: command.a()
   private void configureButtonBindings() {
     drive.setDefaultCommand(
         Commands.run(
-            () -> drive.driveArcade(-controller.getLeftY(), controller.getRightX()),
+            () -> drive.driveArcade(-controller.getLeftY(), -controller.getRightX()),
             drive)); // changed left to right
     controller.a().whileTrue(arm.setPositionCommand(() -> 90));
     controller.b().whileTrue(arm.setPositionCommand(() -> 180));
+    controller.rightBumper().whileTrue(Commands.run(() -> fan.set(Value.kOn)));
+    controller.rightBumper().whileFalse(Commands.run(() -> fan.set(Value.kOff)));
   }
 }

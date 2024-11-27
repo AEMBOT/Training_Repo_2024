@@ -25,7 +25,6 @@ import edu.wpi.first.math.util.Units;
 public class DriveIOSparkMax implements DriveIO {
   private static final double GEAR_RATIO = 10.0;
 
-  // TODO: CONFIRM CAN IDs
   private final CANSparkMax leftFrontLeader = new CANSparkMax(5, MotorType.kBrushless);
   private final CANSparkMax leftCenterFollower = new CANSparkMax(6, MotorType.kBrushless);
   private final CANSparkMax leftBackFollower = new CANSparkMax(4, MotorType.kBrushless);
@@ -104,7 +103,5 @@ public class DriveIOSparkMax implements DriveIO {
 
   @Override
   public void setVelocity(
-      double leftRadPerSec, double rightRadPerSec, double leftFFVolts, double rightFFVolts) {
-    // TODO!
-  }
+      double leftRadPerSec, double rightRadPerSec, double leftFFVolts, double rightFFVolts) {}
 }

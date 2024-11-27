@@ -44,8 +44,6 @@ public class Arm extends SubsystemBase {
     io.setVoltage(volts);
   }
   // This creates a command style request for the scheduler to set goal positions
-  // TODO: Lets finish this command based function!
-  // Hint: Utilize the runPosition function below in the return.
   public Command setPositionCommand(DoubleSupplier posDeg) {
     return run(() -> runPosition(posDeg.getAsDouble()));
   }
