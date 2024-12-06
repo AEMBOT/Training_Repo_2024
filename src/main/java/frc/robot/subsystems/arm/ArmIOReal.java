@@ -31,6 +31,11 @@ public class ArmIOReal implements ArmIO {
     motor.burnFlash();
   }
 
+  // This gets the motors current velocity in Degrees per second
+  private double getVelocity() {
+    return (Units.rotationsToDegrees(armEncoder.getVelocity() / GEAR_RATIO)) / 60;
+  }
+
   // This gets the motors current position in Degrees
   private double getPosition() {
     return Units.rotationsToDegrees(armEncoder.getPosition() / GEAR_RATIO);
@@ -52,8 +57,7 @@ public class ArmIOReal implements ArmIO {
   public void updateInputs(ArmIOInputs inputs) {
     inputs.armPositionDeg = getPosition();
     inputs.armErrorDeg = getError();
-    inputs.armVelocityDegPerSec =
-        (Units.rotationsToDegrees(armEncoder.getVelocity() / GEAR_RATIO)) / 60;
+    inputs.armVelocityDegPerSec = getVelocity();
     inputs.armSetpointPosition = this.armSetpointPosition;
     inputs.armAppliedVolts = armMotor.getAppliedOutput() * armMotor.getBusVoltage();
     inputs.armCurrentAmps = armMotor.getOutputCurrent();

@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.arm.Arm;
 import frc.robot.subsystems.arm.ArmIO;
 import frc.robot.subsystems.arm.ArmIOReal;
@@ -91,5 +92,19 @@ public class RobotContainer {
     controller.b().whileTrue(arm.setPositionCommand(() -> 180));
     controller.rightBumper().whileTrue(Commands.run(() -> fan.set(Value.kOn)));
     controller.rightBumper().whileFalse(Commands.run(() -> fan.set(Value.kOff)));
+
+    // sysId controls
+    controller
+        .leftBumper()
+        .whileTrue(arm.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    controller
+        .leftTrigger()
+        .whileTrue(arm.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    controller
+        .x()
+        .whileTrue(arm.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    controller
+        .y()
+        .whileTrue(arm.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
 }

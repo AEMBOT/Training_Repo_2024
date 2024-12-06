@@ -23,7 +23,7 @@ public class Arm extends SubsystemBase {
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 null,
-                null,
+                Volts.of(4),
                 null,
                 (state) -> Logger.recordOutput("Arm/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism((voltage) -> runVolts(voltage.in(Volts)), null, this));
@@ -52,5 +52,14 @@ public class Arm extends SubsystemBase {
   public void runPosition(double positionDeg) {
     Logger.recordOutput("Arm/GoalDeg", positionDeg);
     io.setPosition(positionDeg);
+  }
+  
+  // SYSID commands
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return sysId.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return sysId.dynamic(direction);
   }
 }
