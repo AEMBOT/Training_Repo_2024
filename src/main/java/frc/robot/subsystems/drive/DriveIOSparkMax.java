@@ -23,7 +23,8 @@ import edu.wpi.first.math.util.Units;
  * "CANSparkFlex".
  */
 public class DriveIOSparkMax implements DriveIO {
-  private static final double GEAR_RATIO = 10.0;
+  private static final double GEAR_RATIO =
+      5; // Off by factor of 2 from output velocity, adjust to 5
 
   private final CANSparkMax leftFrontLeader = new CANSparkMax(5, MotorType.kBrushless);
   private final CANSparkMax leftCenterFollower = new CANSparkMax(6, MotorType.kBrushless);
