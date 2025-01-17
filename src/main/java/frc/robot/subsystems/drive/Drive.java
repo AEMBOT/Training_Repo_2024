@@ -23,8 +23,10 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -57,11 +59,17 @@ public class Drive extends SubsystemBase {
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 null,
-                null,
-                null,
+                Volts.of(6),
+                Seconds.of(1),
                 (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> driveVolts(voltage.in(Volts), voltage.in(Volts)), null, this));
+    // Commands.waitSeconds(2),
+    // sysId.dynamic(Direction.kForward),
+    // stopCommand(),
+    // Commands.waitSeconds(2),
+    // sysId.dynamic(Direction.kReverse),
+    // stopCommand());
   }
 
   @Override
@@ -71,6 +79,10 @@ public class Drive extends SubsystemBase {
 
     // Update odometry
     odometry.update(inputs.gyroYaw, getLeftPositionMeters(), getRightPositionMeters());
+  }
+
+  public Command stopCommand() {
+    return runOnce(() -> driveVolts(0.0, 0.0));
   }
 
   /** Run open loop at the specified voltage. */
@@ -102,14 +114,14 @@ public class Drive extends SubsystemBase {
     io.setVoltage(0.0, 0.0);
   }
 
-  /** Returns a command to run a quasistatic test in the specified direction. */
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return sysId.quasistatic(direction);
-  }
-
-  /** Returns a command to run a dynamic test in the specified direction. */
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return sysId.dynamic(direction);
+  /** Runs a command to do full drive characterization without multiple commmands */
+  public Command runDriveCharacterizationCommand() {
+    return Commands.sequence(
+        sysId.quasistatic(Direction.kForward),
+        stopCommand(),
+        Commands.waitSeconds(2),
+        sysId.quasistatic(Direction.kReverse),
+        stopCommand());
   }
 
   /** Returns the current odometry pose in meters. */
