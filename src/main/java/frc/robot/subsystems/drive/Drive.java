@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
+import java.util.function.DoubleSupplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -59,17 +60,11 @@ public class Drive extends SubsystemBase {
         new SysIdRoutine(
             new SysIdRoutine.Config(
                 null,
-                Volts.of(6),
-                Seconds.of(1),
+                Volts.of(4),
+                Seconds.of(2.5),
                 (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
             new SysIdRoutine.Mechanism(
                 (voltage) -> driveVolts(voltage.in(Volts), voltage.in(Volts)), null, this));
-    // Commands.waitSeconds(2),
-    // sysId.dynamic(Direction.kForward),
-    // stopCommand(),
-    // Commands.waitSeconds(2),
-    // sysId.dynamic(Direction.kReverse),
-    // stopCommand());
   }
 
   @Override
@@ -81,6 +76,7 @@ public class Drive extends SubsystemBase {
     odometry.update(inputs.gyroYaw, getLeftPositionMeters(), getRightPositionMeters());
   }
 
+  // Command to stop driving.
   public Command stopCommand() {
     return runOnce(() -> driveVolts(0.0, 0.0));
   }
@@ -88,6 +84,10 @@ public class Drive extends SubsystemBase {
   /** Run open loop at the specified voltage. */
   public void driveVolts(double leftVolts, double rightVolts) {
     io.setVoltage(leftVolts, rightVolts);
+  }
+
+  public void driveDistance(double distanceMeters) {
+    io.inputDistance(distanceMeters);
   }
 
   /** Run closed loop at the specified voltage. */
@@ -114,6 +114,10 @@ public class Drive extends SubsystemBase {
     io.setVoltage(0.0, 0.0);
   }
 
+  public Command setGoalPositionCommand(DoubleSupplier distanceMeters) {
+    return run(() -> driveDistance(distanceMeters.getAsDouble()));
+  }
+
   /** Runs a command to do full drive characterization without multiple commmands */
   public Command runDriveCharacterizationCommand() {
     return Commands.sequence(
@@ -121,6 +125,12 @@ public class Drive extends SubsystemBase {
         stopCommand(),
         Commands.waitSeconds(2),
         sysId.quasistatic(Direction.kReverse),
+        stopCommand(),
+        Commands.waitSeconds(2),
+        sysId.dynamic(Direction.kForward),
+        stopCommand(),
+        Commands.waitSeconds(2),
+        sysId.dynamic(Direction.kReverse),
         stopCommand());
   }
 

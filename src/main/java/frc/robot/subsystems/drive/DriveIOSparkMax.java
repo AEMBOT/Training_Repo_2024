@@ -13,9 +13,13 @@
 
 package frc.robot.subsystems.drive;
 
+import com.revrobotics.CANSparkBase;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -25,6 +29,21 @@ import edu.wpi.first.math.util.Units;
 public class DriveIOSparkMax implements DriveIO {
   private static final double GEAR_RATIO =
       5; // Off by factor of 2 from output velocity, adjust to 5
+
+  private static final double kMaxVelocityMetersPerSecond = 0.5;
+  private static final double kMaxAccelerationMetersPerSecondSquared = 0.2;
+
+  private static final double left_kS = 0.14089;
+  private static final double left_kV = 1.2874;
+  private static final double left_kP = 0.2237;
+  private static final double left_kI = 0.0;
+  private static final double left_kD = 0.0;
+
+  private static final double right_kS = 0.17153;
+  private static final double right_kV = 1.4052;
+  private static final double right_kP = 0.08001;
+  private static final double right_kI = 0.0;
+  private static final double right_kD = 0.0;
 
   private final CANSparkMax leftFrontLeader = new CANSparkMax(5, MotorType.kBrushless);
   private final CANSparkMax leftCenterFollower = new CANSparkMax(6, MotorType.kBrushless);
@@ -48,12 +67,27 @@ public class DriveIOSparkMax implements DriveIO {
   private final RelativeEncoder leftEncoder = leftLeader.getEncoder();
   private final RelativeEncoder rightEncoder = rightLeader.getEncoder();
 
+  private final TrapezoidProfile.Constraints constraints =
+      new TrapezoidProfile.Constraints(
+          kMaxVelocityMetersPerSecond, kMaxAccelerationMetersPerSecondSquared);
+
+  private final ProfiledPIDController left_controller =
+      new ProfiledPIDController(left_kP, left_kI, left_kD, constraints);
+  private final ProfiledPIDController right_controller =
+      new ProfiledPIDController(right_kP, right_kI, right_kD, constraints);
+
+  private final SimpleMotorFeedforward left_feedforward =
+      new SimpleMotorFeedforward(left_kS, left_kV);
+  private final SimpleMotorFeedforward right_feedforward =
+      new SimpleMotorFeedforward(right_kS, right_kV);
+
   public DriveIOSparkMax() {
     for (CANSparkMax motor : motors) {
       motor.restoreFactoryDefaults();
       motor.setCANTimeout(250);
       motor.enableVoltageCompensation(12.0);
       motor.setSmartCurrentLimit(20);
+      motor.setIdleMode(CANSparkBase.IdleMode.kBrake);
     }
 
     leftFrontLeader.setInverted(false);
@@ -100,6 +134,22 @@ public class DriveIOSparkMax implements DriveIO {
   public void setVoltage(double leftVolts, double rightVolts) {
     leftLeader.setVoltage(leftVolts);
     rightLeader.setVoltage(rightVolts);
+  }
+
+  public void periodic() {
+    double leftVolts =
+        left_controller.calculate(leftEncoder.getPosition() * GEAR_RATIO)
+            + left_feedforward.calculate(left_controller.getSetpoint().velocity);
+    double rightVolts =
+        right_controller.calculate(rightEncoder.getPosition() * GEAR_RATIO)
+            + right_feedforward.calculate(right_controller.getSetpoint().velocity);
+    setVoltage(leftVolts, rightVolts);
+  }
+
+  @Override
+  public void inputDistance(double distanceMeters) {
+    left_controller.setGoal(distanceMeters);
+    right_controller.setGoal(distanceMeters);
   }
 
   @Override

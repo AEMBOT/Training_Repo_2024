@@ -57,7 +57,7 @@ public class Robot extends LoggedRobot {
         break;
     }
     // * Create log directory and files and stuff idk really */
-    String LOG_DIRECTORY = "U/logs";
+    String LOG_DIRECTORY = "/home/lvuser/logs";
     var directory = new File(LOG_DIRECTORY);
     if (!directory.exists()) {
       directory.mkdir();

@@ -53,7 +53,7 @@ public class Arm extends SubsystemBase {
     Logger.recordOutput("Arm/GoalDeg", positionDeg);
     io.setPosition(positionDeg);
   }
-  
+
   // SYSID commands
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return sysId.quasistatic(direction);

@@ -89,11 +89,12 @@ public class RobotContainer {
             drive)); // changed left to right
     controller.a().whileTrue(arm.setPositionCommand(() -> 90));
     controller.b().whileTrue(arm.setPositionCommand(() -> 180));
+    controller.x().onTrue(drive.setGoalPositionCommand(() -> 5));
 
     // controller.rightBumper().whileTrue(Commands.run(() -> fan.set(Value.kOn)));
     // controller.rightBumper().whileFalse(Commands.run(() -> fan.set(Value.kOff)));
 
     // * SysId Control *//
-    controller.x().onTrue(drive.runDriveCharacterizationCommand());
+    // controller.x().onTrue(drive.runDriveCharacterizationCommand());
   }
 }
